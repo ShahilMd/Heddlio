@@ -1,0 +1,25 @@
+{
+  "extends" : "@monorepo-blog/config/tsconfig.base.json",
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "jsx": "preserve",
+    "paths": {
+      "@/*": ["./*"],
+      "@monorepo-blog/ui/*": ["../../packages/ui/src/*"]
+    },
+    
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": ["node_modules"]
+}

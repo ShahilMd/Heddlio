@@ -1,0 +1,1 @@
+export { default } from "@monorepo-blog/ui/postcss.config"

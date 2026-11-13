@@ -1,0 +1,28 @@
+{
+  "name": "monorepo-blog",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "check-types": "turbo run check-types",
+    "backend": "pnpm --filter api start:dev",
+    "web": "pnpm --filter web dev",
+    "admin": "pnpm --filter admin dev"
+  },
+  "dependencies": {
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@monorepo-blog/config": "workspace:*",
+    "@types/node": "^26.4.1",
+    "turbo": "^2.11.7",
+    "typescript": "^6.0.3",
+    "varlock": "1.23.0"
+  },
+  "packageManager": "pnpm@12.18.0"
+}
