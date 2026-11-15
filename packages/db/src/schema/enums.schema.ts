@@ -24,19 +24,24 @@ export const userStatusEnum = pgEnum("user_status", [
   "disabled",
 ]);
 
-export const organizationRoleEnum = pgEnum("organization_role", [
-  "owner",
-  "admin",
-  "member",
-  "guest",
-]);
-
 export const memberStatusEnum = pgEnum("member_status", [
   "invited",
   "active",
   "suspended",
   "removed",
 ]);
+
+/**
+ * Per-member permission overrides are additive to the role's permission set:
+ * `allow` grants one extra capability, `deny` removes one. The row's primary
+ * key is (organization, member, permission), so a member cannot hold both
+ * effects for the same permission.
+ */
+export const permissionOverrideEffectEnum = pgEnum(
+  "permission_override_effect",
+  ["allow", "deny"],
+);
+
 
 /* ------------------------------------------------------------------ */
 /* Messaging (Slack-like)                                              */

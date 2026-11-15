@@ -2,6 +2,22 @@
   "name": "@heddlio/auth",
   "version": "0.0.0",
   "private": true,
-  "main": "./src/index.ts",
-  "types": "./src/index.ts"
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --clean && tsc --emitDeclarationOnly",
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@heddlio/config": "workspace:*",
+    "tsup": "^9.0.0",
+    "typescript": "^6.0.3"
+  }
 }
