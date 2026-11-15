@@ -170,7 +170,7 @@ importers:
         specifier: ^4.5.4
         version: 4.6.7
     devDependencies:
-      '@monorepo-blog/config':
+      '@heddlio/config':
         specifier: workspace:*
         version: link:packages/config
       '@types/node':
@@ -188,16 +188,16 @@ importers:
 
   apps/admin:
     dependencies:
-      '@monorepo-blog/auth':
+      '@heddlio/auth':
         specifier: workspace:*
         version: link:../../packages/auth
-      '@monorepo-blog/db':
+      '@heddlio/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@monorepo-blog/types':
+      '@heddlio/types':
         specifier: workspace:*
         version: link:../../packages/types
-      '@monorepo-blog/ui':
+      '@heddlio/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       next:
@@ -243,10 +243,10 @@ importers:
 
   apps/api:
     dependencies:
-      '@monorepo-blog/auth':
+      '@heddlio/auth':
         specifier: workspace:*
         version: link:../../packages/auth
-      '@monorepo-blog/db':
+      '@heddlio/db':
         specifier: workspace:*
         version: link:../../packages/db
       '@nestjs/common':
@@ -325,16 +325,16 @@ importers:
 
   apps/web:
     dependencies:
-      '@monorepo-blog/auth':
+      '@heddlio/auth':
         specifier: workspace:*
         version: link:../../packages/auth
-      '@monorepo-blog/db':
+      '@heddlio/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@monorepo-blog/types':
+      '@heddlio/types':
         specifier: workspace:*
         version: link:../../packages/types
-      '@monorepo-blog/ui':
+      '@heddlio/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       next:

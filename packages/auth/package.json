@@ -1,5 +1,5 @@
 {
-  "name": "@monorepo-blog/auth",
+  "name": "@heddlio/auth",
   "version": "0.0.0",
   "private": true,
   "main": "./src/index.ts",

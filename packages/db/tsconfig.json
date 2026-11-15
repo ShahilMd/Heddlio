@@ -1,5 +1,5 @@
 {
-  "extends": "@monorepo-blog/config/tsconfig.base.json",
+  "extends": "@heddlio/config/tsconfig.base.json",
   "compilerOptions": {
     "moduleResolution": "bundler",
     "module": "ESNext",

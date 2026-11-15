@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   },
   cacheComponents: true,
   partialPrefetching: true,
-  transpilePackages: ["@monorepo-blog/ui"],
+  transpilePackages: ["@heddlio/ui"],
   turbopack: {
     rules: {
       "*.css": {
