@@ -9,9 +9,9 @@ for a Slack + Jira + Miro style product at production scale.
 - **Migrations:** `drizzle/` — **generate and run these yourself**
 
 ```bash
-pnpm --filter @monorepo-blog/db typecheck     # tsc --noEmit
-pnpm --filter @monorepo-blog/db db:generate   # writes drizzle/0001_*.sql
-pnpm --filter @monorepo-blog/db db:migrate    # applies it
+pnpm --filter @heddlio/db typecheck     # tsc --noEmit
+pnpm --filter @heddlio/db db:generate   # writes drizzle/0001_*.sql
+pnpm --filter @heddlio/db db:migrate    # applies it
 ```
 
 ## Tables (24)

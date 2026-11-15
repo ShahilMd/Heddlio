@@ -5,7 +5,7 @@
 /* Tailwind v4 only auto-scans `process.cwd()` (the app dir), so classes inside
    this package (components/, hooks/, …) are never picked up and utilities like
    `border-border` are not generated. Register the package source explicitly. */
-@source "/home/dayshift/coding/monorepo-blog/packages/ui/src";
+@source "./";
 
 @custom-variant dark (&:is(.dark *));
 

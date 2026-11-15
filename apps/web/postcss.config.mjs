@@ -1,1 +1,1 @@
-export { default } from "@monorepo-blog/ui/postcss.config"
+export { default } from "@heddlio/ui/postcss.config"

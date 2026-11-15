@@ -13,11 +13,11 @@
   "iconLibrary": "lucide",
   "rtl": false,
   "aliases": {
-    "components": "@monorepo-blog/ui/components",
-    "utils": "@monorepo-blog/ui/lib/utils",
-    "ui": "@monorepo-blog/ui/components",
-    "lib": "@monorepo-blog/ui/lib",
-    "hooks": "@monorepo-blog/ui/hooks"
+    "components": "@heddlio/ui/components",
+    "utils": "@heddlio/ui/lib/utils",
+    "ui": "@heddlio/ui/components",
+    "lib": "@heddlio/ui/lib",
+    "hooks": "@heddlio/ui/hooks"
   },
   "menuColor": "default",
   "menuAccent": "subtle",
