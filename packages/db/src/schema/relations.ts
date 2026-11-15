@@ -1,10 +1,15 @@
 import { relations } from "drizzle-orm";
 
 import { users } from "./users.schema.js";
+import { permissions } from "./permission.schema.js";
 import {
   organizations,
   organizationMembers,
   organizationInvitations,
+  organizationRoles,
+  organizationRolePermissions,
+  organizationMemberPermissionOverrides,
+  organizationAuditEvents,
 } from "./organization.schema.js";
 import { channels, channelMembers } from "./channel.schema.js";
 import {
@@ -47,6 +52,19 @@ import { notifications } from "./notification.schema.js";
 export const usersRelations = relations(users, ({ many }) => ({
   organizationMemberships: many(organizationMembers),
   sentInvitations: many(organizationInvitations, { relationName: "inviter" }),
+  acceptedInvitations: many(organizationInvitations, {
+    relationName: "inviteAcceptor",
+  }),
+  revokedInvitations: many(organizationInvitations, {
+    relationName: "inviteRevoker",
+  }),
+  rolePermissionGrants: many(organizationRolePermissions, {
+    relationName: "rolePermissionGranter",
+  }),
+  permissionOverridesGranted: many(organizationMemberPermissionOverrides, {
+    relationName: "overrideGranter",
+  }),
+  auditEvents: many(organizationAuditEvents, { relationName: "auditActor" }),
   ownedChannels: many(channels, { relationName: "channelCreator" }),
   channelMemberships: many(channelMembers),
   sentMessages: many(messages, { relationName: "messageAuthor" }),
@@ -70,6 +88,8 @@ export const organizationsRelations = relations(
   ({ many }) => ({
     members: many(organizationMembers),
     invitations: many(organizationInvitations),
+    roles: many(organizationRoles),
+    auditEvents: many(organizationAuditEvents),
     channels: many(channels),
     projects: many(projects),
     boards: many(boards),
@@ -80,7 +100,7 @@ export const organizationsRelations = relations(
 
 export const organizationMembersRelations = relations(
   organizationMembers,
-  ({ one }) => ({
+  ({ one, many }) => ({
     organization: one(organizations, {
       fields: [organizationMembers.organizationId],
       references: [organizations.id],
@@ -89,10 +109,73 @@ export const organizationMembersRelations = relations(
       fields: [organizationMembers.userId],
       references: [users.id],
     }),
+    role: one(organizationRoles, {
+      fields: [organizationMembers.roleId],
+      references: [organizationRoles.id],
+    }),
     inviter: one(users, {
       fields: [organizationMembers.invitedBy],
       references: [users.id],
       relationName: "inviter",
+    }),
+    permissionOverrides: many(organizationMemberPermissionOverrides),
+  }),
+);
+
+export const organizationRolesRelations = relations(
+  organizationRoles,
+  ({ one, many }) => ({
+    organization: one(organizations, {
+      fields: [organizationRoles.organizationId],
+      references: [organizations.id],
+    }),
+    permissions: many(organizationRolePermissions),
+    members: many(organizationMembers),
+    invitations: many(organizationInvitations),
+  }),
+);
+
+export const organizationRolePermissionsRelations = relations(
+  organizationRolePermissions,
+  ({ one }) => ({
+    role: one(organizationRoles, {
+      fields: [organizationRolePermissions.roleId],
+      references: [organizationRoles.id],
+    }),
+    permission: one(permissions, {
+      fields: [organizationRolePermissions.permissionKey],
+      references: [permissions.key],
+    }),
+    grantedBy: one(users, {
+      fields: [organizationRolePermissions.grantedBy],
+      references: [users.id],
+      relationName: "rolePermissionGranter",
+    }),
+  }),
+);
+
+export const organizationMemberPermissionOverridesRelations = relations(
+  organizationMemberPermissionOverrides,
+  ({ one }) => ({
+    organization: one(organizations, {
+      fields: [organizationMemberPermissionOverrides.organizationId],
+      references: [organizations.id],
+    }),
+    member: one(organizationMembers, {
+      fields: [
+        organizationMemberPermissionOverrides.organizationId,
+        organizationMemberPermissionOverrides.userId,
+      ],
+      references: [organizationMembers.organizationId, organizationMembers.userId],
+    }),
+    permission: one(permissions, {
+      fields: [organizationMemberPermissionOverrides.permissionKey],
+      references: [permissions.key],
+    }),
+    grantedBy: one(users, {
+      fields: [organizationMemberPermissionOverrides.grantedBy],
+      references: [users.id],
+      relationName: "overrideGranter",
     }),
   }),
 );
@@ -104,13 +187,47 @@ export const organizationInvitationsRelations = relations(
       fields: [organizationInvitations.organizationId],
       references: [organizations.id],
     }),
+    role: one(organizationRoles, {
+      fields: [organizationInvitations.roleId],
+      references: [organizationRoles.id],
+    }),
     invitedBy: one(users, {
       fields: [organizationInvitations.invitedBy],
       references: [users.id],
       relationName: "inviter",
     }),
+    acceptedBy: one(users, {
+      fields: [organizationInvitations.acceptedBy],
+      references: [users.id],
+      relationName: "inviteAcceptor",
+    }),
+    revokedBy: one(users, {
+      fields: [organizationInvitations.revokedBy],
+      references: [users.id],
+      relationName: "inviteRevoker",
+    }),
   }),
 );
+
+export const organizationAuditEventsRelations = relations(
+  organizationAuditEvents,
+  ({ one }) => ({
+    organization: one(organizations, {
+      fields: [organizationAuditEvents.organizationId],
+      references: [organizations.id],
+    }),
+    actor: one(users, {
+      fields: [organizationAuditEvents.actorId],
+      references: [users.id],
+      relationName: "auditActor",
+    }),
+  }),
+);
+
+export const permissionsRelations = relations(permissions, ({ many }) => ({
+  roleGrants: many(organizationRolePermissions),
+  memberOverrides: many(organizationMemberPermissionOverrides),
+}));
 
 /* ----------------------------- messaging ---------------------------- */
 

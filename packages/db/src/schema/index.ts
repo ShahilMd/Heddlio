@@ -13,6 +13,7 @@
 
 export * from "./enums.schema.js";
 export * from "./users.schema.js";
+export * from "./permission.schema.js";
 export * from "./organization.schema.js";
 export * from "./channel.schema.js";
 export * from "./message.schema.js";

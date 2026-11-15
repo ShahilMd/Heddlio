@@ -1,0 +1,5 @@
+CREATE UNIQUE INDEX "org_roles_org_id_id_uq" ON "organization_roles" USING btree ("organization_id","id");--> statement-breakpoint
+ALTER TABLE "organization_invitations" DROP CONSTRAINT "organization_invitations_role_id_organization_roles_id_fk";--> statement-breakpoint
+ALTER TABLE "organization_members" DROP CONSTRAINT "organization_members_role_id_organization_roles_id_fk";--> statement-breakpoint
+ALTER TABLE "organization_invitations" ADD CONSTRAINT "org_invites_role_fk" FOREIGN KEY ("organization_id","role_id") REFERENCES "public"."organization_roles"("organization_id","id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "organization_members" ADD CONSTRAINT "org_members_role_fk" FOREIGN KEY ("organization_id","role_id") REFERENCES "public"."organization_roles"("organization_id","id") ON DELETE restrict ON UPDATE no action;

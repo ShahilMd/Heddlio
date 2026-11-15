@@ -7,7 +7,7 @@
   ],
   "type": "module",
   "scripts": {
-    "predev": "pnpm --filter @heddlio/db build",
+    "predev": "pnpm --filter @heddlio/auth build && pnpm --filter @heddlio/db build",
     "dev": "turbo run dev",
     "build": "turbo run build",
     "check-types": "turbo run check-types",

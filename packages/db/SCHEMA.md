@@ -10,15 +10,15 @@ for a Slack + Jira + Miro style product at production scale.
 
 ```bash
 pnpm --filter @heddlio/db typecheck     # tsc --noEmit
-pnpm --filter @heddlio/db db:generate   # writes drizzle/0001_*.sql
+pnpm --filter @heddlio/db db:generate   # writes the next drizzle/000N_*.sql
 pnpm --filter @heddlio/db db:migrate    # applies it
 ```
 
-## Tables (24)
+## Tables (29)
 
 | Domain | Tables |
 | --- | --- |
-| Identity & tenancy | `users`, `organizations`, `organization_members`, `organization_invitations` |
+| Identity & tenancy | `users`, `organizations`, `organization_members`, `organization_invitations`, `organization_roles`, `organization_role_permissions`, `organization_member_permission_overrides`, `organization_audit_events`, `permissions` |
 | Messaging | `channels`, `channel_members`, `messages`, `message_reactions`, `message_mentions` |
 | Work tracking | `projects`, `workflow_statuses`, `labels`, `issues`, `issue_comments`, `issue_labels`, `issue_links`, `issue_activity` |
 | Whiteboard | `boards`, `board_members`, `board_objects` |
@@ -106,6 +106,12 @@ filters on it, because every index is a tax on the insert path.
 | Issue search | `issues_search_gin` on the generated `search_vector` |
 | Unread notification badge | `notifications (user_id) WHERE read_at IS NULL` |
 | One live invite per address | `organization_invitations (organization_id, email) WHERE accepted_at IS NULL AND revoked_at IS NULL` |
+| Member list / keyset pages | `organization_members (organization_id, joined_at, user_id)` |
+| "Who has this role?" / role deletion guard | `organization_members (organization_id, role_id)` |
+| Role grants for one role | `organization_role_permissions (role_id, permission_key)` primary key |
+| Effective overrides for one member | `organization_member_permission_overrides (organization_id, user_id, permission_key)` primary key |
+| Audit feed | `organization_audit_events (organization_id, id)` |
+| Active overrides near expiry (future sweeper) | `organization_member_permission_overrides (expires_at) WHERE expires_at IS NOT NULL` |
 
 Partial indexes (`WHERE ...`) are used aggressively: they index only the rows
 the query cares about, which keeps them small, dense and cache-resident.
@@ -127,6 +133,24 @@ RETURNING` **inside the transaction that inserts the issue** — no
 drift from `title`/`description` and needs no trigger. Message search should
 move to Meilisearch/Elasticsearch once history outgrows a single node — at
 that point this column is the backfill source.
+
+### 11. Authorization is data, not an enum
+
+`organization_members.role` was replaced by `role_id` in migration `0003`.
+Roles are per-organization rows (`organization_roles`) with an integer `rank`
+and a grant set (`organization_role_permissions`). Per-person exceptions live in
+`organization_member_permission_overrides`, keyed by
+`(organization_id, user_id, permission_key)` with an `allow`/`deny` effect and
+an optional expiry. The global `permissions` catalog is code-defined and
+upserted into Postgres at boot; the table exists for FK integrity, joins and
+admin rendering, never as the source of truth.
+
+Tenant safety is enforced by the schema, not only by application code:
+`organization_members` and `organization_invitations` reference
+`organization_roles(organization_id, id)` through composite FKs, so a role from
+another organization cannot be assigned even if a query is wrong. See
+[`AUTHORIZATION.md`](../../AUTHORIZATION.md) for the full model, invariants and
+endpoints.
 
 ## What is intentionally NOT in the database
 
@@ -159,7 +183,8 @@ DECLARE t text;
 BEGIN
   FOREACH t IN ARRAY ARRAY[
     'users','organizations','projects','workflow_statuses','boards',
-    'channels','issues','issue_comments','board_objects'
+    'channels','issues','issue_comments','board_objects','organization_roles',
+    'organization_member_permission_overrides','permissions'
   ] LOOP
     EXECUTE format(
       'CREATE TRIGGER set_updated_at BEFORE UPDATE ON %I
