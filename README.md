@@ -57,6 +57,27 @@ Configuration lives in a single root `.env` file. `.env` is gitignored; commit o
 - `WEB_APP_URL`, `INVITATION_TTL_DAYS`, `MAIL_TRANSPORT`, `MAIL_FROM` and `SYNC_PERMISSION_CATALOG` configure invitations and catalog sync.
 - Run `docker compose down -v` only when you intentionally want to delete local database data.
 
+## Workspace packages and the editor
+
+`@heddlio/auth` and `@heddlio/db` are compiled workspace packages. Node loads
+them from `packages/*/dist`, and `dist` is gitignored, so the folder only exists
+after a build. `predev`, `prebuild`, `pretest` and `prestart*` already build both
+packages for you.
+
+`apps/api/tsconfig.json` additionally maps both packages to their TypeScript
+source. That makes editor diagnostics and `pnpm check-types` work on a fresh
+clone before anything is built. `apps/api/tsconfig.build.json` clears those
+mappings and compiles against `dist` so the build output stays at
+`apps/api/dist`.
+
+If you ever see `TS2307: Cannot find module '@heddlio/auth'` (or `@heddlio/db`),
+build the package that is missing:
+
+```bash
+pnpm --filter @heddlio/auth build
+pnpm --filter @heddlio/db build
+```
+
 ## Documentation
 
 - [`AUTHORIZATION_DIAGRAMS.md`](./AUTHORIZATION_DIAGRAMS.md) - visual guide: database ER diagram, request lifecycle, module map and use-case flows

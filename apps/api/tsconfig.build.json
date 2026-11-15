@@ -1,7 +1,13 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "noEmit": false,
+    // The dev config maps the workspace packages to their TypeScript source so
+    // the editor and `check-types` work before anything is built. The build
+    // must resolve the compiled packages instead, otherwise `tsc` tries to emit
+    // files from ../../packages into apps/api/dist.
+    "paths": {}
   },
   "include": ["src"],
   "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
