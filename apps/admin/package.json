@@ -9,10 +9,10 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@monorepo-blog/auth": "workspace:*",
-    "@monorepo-blog/db": "workspace:*",
-    "@monorepo-blog/types": "workspace:*",
-    "@monorepo-blog/ui": "workspace:*",
+    "@heddlio/auth": "workspace:*",
+    "@heddlio/db": "workspace:*",
+    "@heddlio/types": "workspace:*",
+    "@heddlio/ui": "workspace:*",
     "next": "16.4.6",
     "react": "19.3.0",
     "react-dom": "19.3.0"

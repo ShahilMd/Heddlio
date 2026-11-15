@@ -23,8 +23,8 @@
     "test:e2e": "vitest run --config ./vitest.config.e2e.ts"
   },
   "dependencies": {
-    "@monorepo-blog/auth": "workspace:*",
-    "@monorepo-blog/db": "workspace:*",
+    "@heddlio/auth": "workspace:*",
+    "@heddlio/db": "workspace:*",
     "@nestjs/common": "^12.0.1",
     "@nestjs/config": "^12.1.1",
     "@nestjs/core": "^12.0.1",
